@@ -9,7 +9,7 @@ Dependencies
 NumPy \
 SciPy \
 BoTorch \
-fast_soft_sort (can be found [here](https://github.com/google-research/fast-soft-sort/blob/master/README.md)) \
+fast_soft_sort (can be found [here](https://github.com/google-research/fast-soft-sort/blob/master/README.md))
 
 Example
 -------
