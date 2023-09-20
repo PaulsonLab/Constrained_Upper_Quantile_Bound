@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[62]:
-
-
 import math
 import os
 import time
@@ -36,9 +30,6 @@ from botorch.sampling.normal import SobolQMCNormalSampler
 from botorch.utils import t_batch_mode_transform
 from torch import Tensor
 
-
-get_ipython().run_line_magic('matplotlib', 'inline')
-
 torch.manual_seed(0)
 device = (
     torch.device("cpu") if not torch.cuda.is_available() else torch.device("cuda:4")
@@ -62,10 +53,6 @@ class Problem:
 x_res = None
 g_res = None
 c_res = None
-
-
-# In[63]:
-
 
 # 2D
 # Bazarra et al
@@ -131,10 +118,6 @@ Baz = Problem(g=g, dim=2, h=h, A=A, xL=xL, xU=xU, alpha=alpha, f_opt=f_opt, x_op
 x_res = None
 g_res = None
 c_res = None
-
-
-# In[64]:
-
 
 # 3D
 
@@ -210,10 +193,6 @@ Spr = Problem(g=g, dim=3, h=h, A=A, xL=xL, xU=xU, alpha=alpha, f_opt=f_opt, x_op
 x_res = None
 g_res = None
 c_res = None
-
-
-# In[65]:
-
 
 # 4D
 ### Rosen Suzuki
@@ -292,10 +271,6 @@ x_res = None
 g_res = None
 c_res = None
 
-
-# In[67]:
-
-
 # 5D
 # ex211
 
@@ -370,10 +345,6 @@ Ex211 = Problem(g=g, dim=5, h=h, A=A, xL=xL, xU=xU, alpha=alpha, f_opt=f_opt, x_
 x_res = None
 g_res = None
 c_res = None
-
-
-# In[68]:
-
 
 # 6D
 
@@ -454,10 +425,6 @@ Ex212 = Problem(g=g, dim=6, h=h, A=A, xL=xL, xU=xU, alpha=alpha, f_opt=f_opt, x_
 x_res = None
 g_res = None
 c_res = None
-
-
-# In[70]:
-
 
 # 7D
 
@@ -543,10 +510,6 @@ g09 = Problem(g=g, dim=7, h=h, A=A, xL=xL, xU=xU, alpha=alpha, f_opt=f_opt, x_op
 x_res = None
 g_res = None
 c_res = None
-
-
-# In[71]:
-
 
 # 8D
 
@@ -644,10 +607,6 @@ Ex724 = Problem(g=g, dim=8, h=h, A=A, xL=xL, xU=xU, alpha=alpha, f_opt=f_opt, x_
 x_res = None
 g_res = None
 c_res = None
-
-
-# In[72]:
-
 
 # 10D
 
@@ -754,10 +713,6 @@ x_res = None
 g_res = None
 c_res = None
 
-
-# In[73]:
-
-
 # 4D st_bpv1
 
 
@@ -841,10 +796,6 @@ x_res = None
 g_res = None
 c_res = None
 
-
-# In[74]:
-
-
 # 3D Ex314
 
 def g(x,y):
@@ -897,7 +848,6 @@ alpha = 0.95
 
 # mapping from full variable space x to input to composite black-box z --> z = A*x
 A = torch.eye(3)
-print(A)
 # bounds on variables
 xL = torch.tensor([-2.0, 0.0, -3.0,])
 xU = torch.tensor([2.0, 6.0, 3.0])
@@ -918,18 +868,10 @@ global g_res
 global c_res
 
 
-# In[20]:
-
-
 # generate random points
 def gen_rand_points(bounds, num_samples):
     points_nlzd = torch.rand(num_samples, bounds.shape[-1]).to(bounds)
     return bounds[0] + (bounds[1] - bounds[0]) * points_nlzd
-
-# training data
-# train_X = gen_rand_points(bounds, n_init)
-# train_Z = torch.matmul(train_X, A.T)
-# train_Y = h(train_Z)
 
 # train model function
 def train_model(X, Y, nu=1.5, noiseless_obs=True):
@@ -973,17 +915,6 @@ def train_model(X, Y, nu=1.5, noiseless_obs=True):
   model.eval()
   # return the model
   return model
-
-# # custom likelihood
-# _, aug_batch_shape = HigherOrderGP.get_batch_dimensions(train_X=train_Z, train_Y=train_Y)
-# likelihood = GaussianLikelihood(batch_shape=aug_batch_shape, noise_constraint=Interval(lower_bound=1e-5, upper_bound=1e-4))
-# mll = ExactMarginalLogLikelihood(likelihood, model_hogp)
-# fit_gpytorch_model(mll)
-
-# train model
-
-
-# In[21]:
 
 
 class UpperConstrainedQuantile(MCAcquisitionFunction):
@@ -1054,52 +985,6 @@ class UpperConstrainedQuantile(MCAcquisitionFunction):
           #cons_penalty = torch.sum(torch.min(G[:,1:],torch.zeros(G.shape[0],G.shape[-1]-1))**2,dim=1) # b
           #quantile = quantile - self.penalty_weight*cons_penalty # b
         return quantile
-    
-
-
-# In[22]:
-
-
-# test for 2D
-problem = Baz
-batch_size = 1
-torch.manual_seed(10)
-penalty_weight = 1e5
-A = problem.A
-bounds = torch.vstack((problem.xL, problem.xU))
-n_init = int(2*problem.dim + 1)
-train_X = gen_rand_points(bounds, n_init)
-train_Z = torch.matmul(train_X, A.T)
-train_Y = problem.h(train_Z)
-G_curr = problem.g(train_X, train_Y)
-
-model_gb = train_model(
-          train_Z,
-          train_Y)
-    
-model_bb = train_model(
-          train_X,
-          G_curr)
-
-
-x_test = torch.rand(1,1,2)
-
-
-# In[23]:
-
-
-uqbxx = UpperConstrainedQuantile(model_gb, problem.A, problem.g)
-uqbxx(x_test)
-
-
-# In[24]:
-
-
-model_gb(x_test).mean
-
-
-# In[25]:
-
 
 class ConstrainedExpectedImprovementComposite(MCAcquisitionFunction):
     def __init__(
@@ -1169,30 +1054,6 @@ class ConstrainedExpectedImprovementComposite(MCAcquisitionFunction):
         eiccf = improv.mean(dim=0) # b
 
         return eiccf
-    
-    
-
-
-# In[26]:
-
-
-# test eic-cf
-eiccfxx = ConstrainedExpectedImprovementComposite(model_gb, problem.A, problem.g, torch.max(G_curr[...,0]))
-eiccfxx(x_test)
-
-
-# In[27]:
-
-
-tt = x_test[0,...]
-pos = model_bb(tt)
-pos2 = model_gb(tt)
-print(pos.mean)
-print(problem.g(tt, problem.h(tt)))
-print(torch.max(G_curr[...,0]))
-
-
-# In[28]:
 
 
 # EPBO acquisition
@@ -1246,32 +1107,10 @@ class ExactPenalty(AnalyticAcquisitionFunction):
         #print(sigma)
         #print(obj)
         return obj - self.ro*vio
-
-
-# In[29]:
-
-
-#test epbo
-epboxx = ExactPenalty(model_bb)
-epboxx(x_test)
-
-
-# In[ ]:
-
-
-
-
-
-# In[30]:
-
-
+        
 def optimize_ucq(lcq, bounds, **options):
     cands_nlzd, _ = optimize_acqf(lcq, bounds, **options)
     return cands_nlzd
-
-
-# In[75]:
-
 
 from skquant.opt import minimize
 import pybobyqa
@@ -1429,10 +1268,7 @@ def run_main_loop(problem, ninit=2, alpha=0.95, ro=50, n_batches=25, opt_tol=1e-
     return train_X, G_curr, wall_time
 
 
-# In[ ]:
-
-
-# run for alpha = 0.95, penalty weight in the range of {100, 1000, and 1e4}
+### RUN ALL SOLVERS AND BENCHMARKS
 
 problem_list = [Baz, Spr, RS, Ex211, Ex212, g09, Ex724, Ex216, bpv4D, Ex314]
 solver_list = [uqb','eic','ei-cf', 'epbo','snobfit', 'cmaes', 'bobyqa', 'direct']
