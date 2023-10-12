@@ -20,6 +20,6 @@ Run setup.py in the /src folder
 Reference
 ---------
 
-[arXiv link](https://arxiv.org/pdf/2305.03824.pdf)https://arxiv.org/pdf/2305.03824.pdf
+https://arxiv.org/pdf/2305.03824.pdf)https://arxiv.org/pdf/2305.03824.pdf
 
 (Manuscript in review, Journal link will be added once published)
