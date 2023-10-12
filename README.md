@@ -1,7 +1,7 @@
 Constrained Upper Quantile Bound
 ==================================
 
-Constrained Upper Quantile Bound (CUQB) for solveing constrained hybrid models. 
+Constrained Upper Quantile Bound (CUQB) for solving constrained hybrid models. 
 
 Dependencies
 ------------
@@ -20,4 +20,6 @@ Run setup.py in the /src folder
 Reference
 ---------
 
-Check back soon
+[arXiv link](https://arxiv.org/pdf/2305.03824.pdf)https://arxiv.org/pdf/2305.03824.pdf
+
+(Manuscript in review, Journal link will be added once published)
