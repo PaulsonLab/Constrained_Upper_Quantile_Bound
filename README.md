@@ -19,8 +19,8 @@ Run setup.py in the /src folder
 
 Reference
 ---------
-> No-Regret Bayesian Optimization with Unknown Equality and Inequality Constraints using Exact Penalty Functions
-> Congwen Lu, Joel Paulson
+> No-Regret Bayesian Optimization with Unknown Equality and Inequality Constraints using Exact Penalty Functions \
+> Congwen Lu, Joel Paulson \
 > IFAC 2022 \
 > [Paper Link](https://www.sciencedirect.com/science/article/pii/S2405896322009648) \
 > [arXiv Link](https://arxiv.org/pdf/2305.03824.pdf)
